@@ -16,12 +16,15 @@
 /* Based heavily on https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/drivers/power/test_power.c?id=refs/tags/v4.2.6 */
 
 
+#define BATNAME "bq27441"
+#define CHRGNAME "imx_usb_charger"
+
 #include <linux/fs.h>
 #include <linux/kernel.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/power_supply.h>
-
+#include <linux/uaccess.h>
 #include <asm/uaccess.h>
 
 static int
@@ -62,7 +65,7 @@ static struct battery_status {
 static int ac_status = 1;
 
 static char *fake_ac_supplies[] = {
-    "BAT0",
+    BATNAME,
     "BAT1",
 };
 
@@ -92,7 +95,7 @@ static enum power_supply_property fake_ac_properties[] = {
 
 static struct power_supply_desc descriptions[] = {
     {
-        .name = "BAT0",
+        .name = BATNAME,
         .type = POWER_SUPPLY_TYPE_BATTERY,
         .properties = fake_battery_properties,
         .num_properties = ARRAY_SIZE(fake_battery_properties),
@@ -108,7 +111,7 @@ static struct power_supply_desc descriptions[] = {
     },
 
     {
-        .name = "AC0",
+        .name = CHRGNAME,
         .type = POWER_SUPPLY_TYPE_MAINS,
         .properties = fake_ac_properties,
         .num_properties = ARRAY_SIZE(fake_ac_properties),
